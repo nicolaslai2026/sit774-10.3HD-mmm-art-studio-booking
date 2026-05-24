@@ -1,18 +1,3 @@
-// ============================================================================
-//  server.js  —  Interactive Class Booking System (back-end API)
-// ----------------------------------------------------------------------------
-//    1. DYNAMIC RESPONSES   : GET /api/classes returns live seat counts as
-//                             JSON. The front-end polls it and re-renders the
-//                             badges, so availability updates without a reload.
-//
-//    2. CONCURRENCY SAFETY  : POST /api/bookings wraps the "check seats then
-//                             insert" step in a SQLite TRANSACTION. This is the
-//                             core problem of the project: if two people try to
-//                             grab the last seat at the same instant, only one
-//                             can succeed. See bookClassAtomically() below. it
-//                             is the most important function in the codebase.
-// ============================================================================
-
 require('dotenv').config();
 
 const express = require('express');
