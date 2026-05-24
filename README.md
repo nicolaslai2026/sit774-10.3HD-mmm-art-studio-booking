@@ -190,3 +190,98 @@ mmm-booking/
   can't be enumerated.
 - User contact details are stored only in the `bookings` table and never appear
   in any API response or URL.
+
+--
+
+
+## Email confirmation
+
+I would like to talk about how I learn to make the email confirmation part. 
+
+After a booking, we send a real confirmation email. Create `notify.js`:
+
+```js
+// notify.js : sends the booking confirmation email via Nodemailer
+const nodemailer = require('nodemailer');
+
+let mailer = null;
+
+function getMailer() {
+  if (mailer) return mailer;
+  // No credentials configured -> return null (we'll fall back to logging).
+  if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER) return null;
+
+  mailer = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: Number(process.env.EMAIL_PORT) === 465,
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  });
+  return mailer;
+}
+
+async function sendConfirmationEmail(booking) {
+  const transport = getMailer();
+
+  const subject = `Booking confirmed: ${booking.className} (${booking.refCode})`;
+  const text =
+    `Hi ${booking.name},\n\n` +
+    `Your place at MMM Art Studio is confirmed.\n\n` +
+    `Class:     ${booking.className}\n` +
+    `When:      ${booking.when}\n` +
+    `Spots:     ${booking.spots}\n` +
+    `Reference: ${booking.refCode}\n\n` +
+    `— MMM Art Studio`;
+
+  // If no email is configured, log instead of failing — handy during development.
+  if (!transport) {
+    console.log('[email:fallback] No SMTP configured. Would have sent:\n' + text);
+    return { sent: false, info: 'logged-to-console' };
+  }
+
+  const info = await transport.sendMail({
+    from: process.env.EMAIL_FROM || `"MMM Art Studio" <${process.env.EMAIL_USER}>`,
+    to: booking.email,
+    subject,
+    text,
+  });
+  return { sent: true, info: info.messageId };
+}
+
+module.exports = { sendConfirmationEmail };
+```
+
+Two important design choices:
+
+- **Credentials come from `process.env`**, never hard-coded. They live in a `.env`
+  file (below) which is excluded by `.gitignore`.
+- **It fails gracefully.** If no email is set up, it logs the message instead of
+  crashing. And back in the booking route, the email call is wrapped in
+  `try/catch`, so even a delivery failure never undoes a confirmed booking.
+
+To enable real email with a Gmail account, create a `.env` file:
+
+```
+PORT=3000
+SESSION_SECRET=change-me-to-a-long-random-string
+
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your.address@gmail.com
+EMAIL_PASS=your-16-char-app-password
+EMAIL_FROM="MMM Art Studio <your.address@gmail.com>"
+```
+
+The `EMAIL_PASS` is **not** your normal Gmail password — it's a 16-character "App
+Password". To create one: turn on 2-Step Verification on your Google account, then
+go to <https://myaccount.google.com/apppasswords>, generate a password, and paste
+it here with the spaces removed. The app runs fine without any of this; email just
+logs to the console until you fill it in.
+
+> **Never commit `.env` to GitHub.** It holds a working credential. This is the
+> single most important security habit in this project.
+
+It's also good practice to ship a `.env.example` (same keys, placeholder values)
+so others know what settings the project expects, without exposing your real ones.
+
+---
