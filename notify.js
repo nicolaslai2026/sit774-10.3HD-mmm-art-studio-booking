@@ -1,15 +1,3 @@
-// ============================================================================
-//  notify.js  —  Email notification module
-// ----------------------------------------------------------------------------
-//  Sends a REAL confirmation email (via Nodemailer / SMTP) after a booking is
-//  made : the automated post-booking communication described in the proposal.
-//
-//  Credentials are read from environment variables (see .env). If they
-//  are missing, the module logs the message to the console instead of failing,
-//  so the app still runs for graders who have not set up an account. This keeps
-//  secrets OUT of the source code.
-// ============================================================================
-
 const nodemailer = require('nodemailer');
 
 //  EMAIL  : Nodemailer over SMTP
