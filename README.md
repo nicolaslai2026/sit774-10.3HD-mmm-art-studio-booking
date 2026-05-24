@@ -1,6 +1,7 @@
 # MMM Art Studio : Interactive Class Booking System
 
 **SIT774 Web Technologies and Development · Task 10.3HD**
+
 **Nicolas Lai | s226148849**
 
 A working full-stack prototype of the feature proposed in Task 7.3HD: a class
