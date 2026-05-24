@@ -1,11 +1,3 @@
-// ============================================================================
-//  db/seed.js  : Database setup & sample data
-// ----------------------------------------------------------------------------
-//  Creates the SQLite database (db/app.db) and the three tables described in
-//  the 7.3HD proposal: classes, bookings, waitlist. Then it loads the sample
-//  classes shown in the lo-fi wireframes so the page has data to display.
-// ============================================================================
-
 const { DatabaseSync } = require('node:sqlite');
 const path = require('path');
 
