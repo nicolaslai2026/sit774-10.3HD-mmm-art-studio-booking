@@ -41,6 +41,11 @@ developer could reproduce them.
 **Goal:** the badge on each class card should always reflect the true number of
 free seats, even if someone else books while the page is open, with no reload.
 
+<img width="1168" height="972" alt="page-1" src="https://github.com/user-attachments/assets/42832984-5bef-4113-81be-19d846ff82a3" />
+<img width="819" height="972" alt="page-2" src="https://github.com/user-attachments/assets/dd89bf2f-9754-4551-bfd4-13003fb3f992" />
+<img width="761" height="945" alt="page-3" src="https://github.com/user-attachments/assets/7d1a81d3-5509-402b-9846-4ed93e8975df" />
+
+
 **Back-end** exposes the current state as JSON:
 
 ```js
@@ -81,6 +86,12 @@ their own booking reflected at once rather than waiting for the next poll.
 > colour/label) on the server so the client never disagrees with the database.
 
 ### Feature 2 : Preventing double-booking (concurrency)
+
+<img width="1710" height="969" alt="double book-1" src="https://github.com/user-attachments/assets/a2c5e782-fd1c-4dc4-9353-4392e26658b7" />
+<img width="1706" height="953" alt="double book-2" src="https://github.com/user-attachments/assets/6c77029e-491a-4910-bfff-454f83813cb7" />
+<img width="1705" height="953" alt="double book-3" src="https://github.com/user-attachments/assets/a8e38fe4-2818-4e62-95e7-ab6ce49dbebe" />
+<img width="1710" height="956" alt="double book-4" src="https://github.com/user-attachments/assets/122111ec-20e8-4f65-a6ac-24f5f777776e" />
+
 
 **The problem:** suppose a class has **1 seat left** and two people click
 "Confirm" at the same instant. A naive implementation does this for *both*
@@ -188,6 +199,9 @@ mmm-booking/
 ## Email confirmation (additional part)
 
 I would like to talk about how I learn to make the email confirmation part. 
+
+<img width="1710" height="939" alt="page-4" src="https://github.com/user-attachments/assets/c774bc06-121b-4c13-acc3-355e122dc743" />
+
 
 After a booking, we send a real confirmation email. Create `notify.js`:
 
