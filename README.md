@@ -11,6 +11,7 @@ The two features this project focuses on:
 
 1. **Dynamic responses** : seat counts update live, without a page reload.
 2. **Concurrency safety** : two people cannot both book the last seat.
+3. **Email confirmation(additional part)** : automatically send confirmation email to the customer.
 
 ---
 
@@ -29,25 +30,15 @@ extensions beyond the taught scope.
 
 ---
 
-
-Then open <http://localhost:3000> in a browser.
-
-Email is **optional** — the app runs without it and just logs the
-messages it *would* have sent to the console. To enable real delivery, copy
-`.env.example` to `.env` and fill in your own SMTP credentials. No
-secrets are committed to the repository.
-
----
-
-## How it works — a tutorial for other developers
+## How it works 
 
 This section explains the two core features in enough detail that another
 developer could reproduce them.
 
-### Feature 1 — Live seat availability (dynamic responses)
+### Feature 1 : Live seat availability (dynamic responses)
 
 **Goal:** the badge on each class card should always reflect the true number of
-free seats, even if someone else books while the page is open — with no reload.
+free seats, even if someone else books while the page is open, with no reload.
 
 **Back-end** exposes the current state as JSON:
 
@@ -55,7 +46,7 @@ free seats, even if someone else books while the page is open — with no reload
 // GET /api/classes — returns every class with a computed "remaining" + "status"
 app.get('/api/classes', (req, res) => {
   const rows = db.prepare('SELECT * FROM classes ORDER BY id').all();
-  res.json(rows.map(toClassDTO)); // toClassDTO adds remaining = max - booked
+  res.json(rows.map(toClassDTO)); 
 });
 ```
 
@@ -63,8 +54,8 @@ app.get('/api/classes', (req, res) => {
 
 ```js
 function statusFor(remaining) {
-  if (remaining <= 0) return 'full';      // grey badge -> waitlist
-  if (remaining <= 2) return 'limited';   // amber badge -> urgency
+  if (remaining <= 0) return 'full';      // grey badge 
+  if (remaining <= 2) return 'limited';   // amber badge 
   return 'available';                     // green badge
 }
 ```
@@ -72,10 +63,10 @@ function statusFor(remaining) {
 **Front-end** polls that endpoint on a timer and re-renders the cards:
 
 ```js
-const POLL_MS = 5000;
-loadClasses();                              // initial load
+const POLL_MS = 20000;
+loadClasses();                            
 setInterval(() => {
-  if (modalIsClosed) loadClasses();         // refresh every 5s when idle
+  if (modalIsClosed) loadClasses();        
 }, POLL_MS);
 ```
 
@@ -89,7 +80,7 @@ their own booking reflected at once rather than waiting for the next poll.
 > the client, and re-fetch on an interval. Keep the *derived* state (badge
 > colour/label) on the server so the client never disagrees with the database.
 
-### Feature 2 — Preventing double-booking (concurrency)
+### Feature 2 : Preventing double-booking (concurrency)
 
 **The problem:** suppose a class has **1 seat left** and two people click
 "Confirm" at the same instant. A naive implementation does this for *both*
@@ -109,7 +100,7 @@ opened with `BEGIN IMMEDIATE`, which takes a write lock straight away:
 
 ```js
 function bookClassAtomically({ classId, name, email, phone, spots }) {
-  db.exec('BEGIN IMMEDIATE');               // acquire the write lock NOW
+  db.exec('BEGIN IMMEDIATE');            
   try {
     const cls = db.prepare('SELECT * FROM classes WHERE id = ?').get(classId);
     const remaining = cls.max_spots - cls.booked_spots;
@@ -122,10 +113,10 @@ function bookClassAtomically({ classId, name, email, phone, spots }) {
     db.prepare('INSERT INTO bookings (class_id, name, email, phone, spots, ref_code) VALUES (?,?,?,?,?,?)')
       .run(classId, name, email, phone, spots, makeRefCode());
 
-    db.exec('COMMIT');                       // release the lock
+    db.exec('COMMIT');                 
     return { ok: true, booking: { /* ... */ } };
   } catch (err) {
-    db.exec('ROLLBACK');                     // any failure -> no half-written booking
+    db.exec('ROLLBACK');                   
     throw err;
   }
 }
@@ -138,8 +129,8 @@ correctly rejected with HTTP **409**.
 
 **Verified.** Firing 10 simultaneous requests at a class with 1 free seat
 produces exactly **1 success (201)** and **9 rejections (409)**, with the
-database ending at `booked = max` and exactly one new booking row — no
-overbooking. (See the project walkthrough video.)
+database ending at `booked = max` and exactly one new booking row. no
+overbooking.
 
 > **To reproduce:** never check-then-act across two separate statements on
 > shared data. Put the check and the write in one transaction and take the lock
@@ -163,17 +154,17 @@ overbooking. (See the project walkthrough video.)
 
 ```
 mmm-booking/
-├── server.js            # Express app + the concurrency-safe booking logic
-├── notify.js            # real email (Nodemailer) integration
-├── db/
-│   ├── seed.js          # creates tables + loads sample classes
-│   └── app.db           # SQLite database (created by seed; git-ignored)
-├── public/
-│   ├── index.html       # classes page, booking modal, confirmation screen
-│   ├── styles.css       # studio-themed, accessible styling
-│   └── app.js           # polling, validation, booking/waitlist flow
-├── .env.example         # template for email credentials (no secrets)
-└── package.json
+── server.js            # Express app + the concurrency-safe booking logic
+── notify.js            # real email (Nodemailer) integration
+── db/
+   ── seed.js          # creates tables + loads sample classes
+   ── app.db           # SQLite database (created by seed; git-ignored)
+── public/
+   ── index.html       # classes page, booking modal, confirmation screen
+   ── styles.css       # studio-themed, accessible styling
+   ── app.js           # polling, validation, booking/waitlist flow
+── .env                # email credentials
+── package.json
 ```
 
 ---
@@ -194,7 +185,7 @@ mmm-booking/
 --
 
 
-## Email confirmation
+## Email confirmation (additional part)
 
 I would like to talk about how I learn to make the email confirmation part. 
 
@@ -208,7 +199,6 @@ let mailer = null;
 
 function getMailer() {
   if (mailer) return mailer;
-  // No credentials configured -> return null (we'll fall back to logging).
   if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER) return null;
 
   mailer = nodemailer.createTransport({
@@ -233,7 +223,6 @@ async function sendConfirmationEmail(booking) {
     `Reference: ${booking.refCode}\n\n` +
     `— MMM Art Studio`;
 
-  // If no email is configured, log instead of failing — handy during development.
   if (!transport) {
     console.log('[email:fallback] No SMTP configured. Would have sent:\n' + text);
     return { sent: false, info: 'logged-to-console' };
@@ -254,7 +243,7 @@ module.exports = { sendConfirmationEmail };
 Two important design choices:
 
 - **Credentials come from `process.env`**, never hard-coded. They live in a `.env`
-  file (below) which is excluded by `.gitignore`.
+  file.
 - **It fails gracefully.** If no email is set up, it logs the message instead of
   crashing. And back in the booking route, the email call is wrapped in
   `try/catch`, so even a delivery failure never undoes a confirmed booking.
@@ -278,10 +267,5 @@ go to <https://myaccount.google.com/apppasswords>, generate a password, and past
 it here with the spaces removed. The app runs fine without any of this; email just
 logs to the console until you fill it in.
 
-> **Never commit `.env` to GitHub.** It holds a working credential. This is the
-> single most important security habit in this project.
-
-It's also good practice to ship a `.env.example` (same keys, placeholder values)
-so others know what settings the project expects, without exposing your real ones.
 
 ---
