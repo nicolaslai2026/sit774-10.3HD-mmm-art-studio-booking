@@ -44,7 +44,6 @@ free seats, even if someone else books while the page is open, with no reload.
 **Back-end** exposes the current state as JSON:
 
 ```js
-// GET /api/classes — returns every class with a computed "remaining" + "status"
 app.get('/api/classes', (req, res) => {
   const rows = db.prepare('SELECT * FROM classes ORDER BY id').all();
   res.json(rows.map(toClassDTO)); 
