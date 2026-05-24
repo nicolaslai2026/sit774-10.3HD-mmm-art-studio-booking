@@ -1,11 +1,3 @@
-// ============================================================================
-//  display.js  :  Print the contents of the database tables
-// ----------------------------------------------------------------------------
-//  Run from the project folder with:  node display.js
-//  Shows the current class seat counts, all confirmed bookings, and the
-//  waitlist : handy for checking that data was saved correctly.
-// ============================================================================
-
 const { DatabaseSync } = require('node:sqlite');
 const path = require('path');
 
