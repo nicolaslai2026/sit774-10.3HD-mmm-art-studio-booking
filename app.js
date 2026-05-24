@@ -1,16 +1,3 @@
-// ============================================================================
-//  app.js : front-end logic for the booking system
-// ----------------------------------------------------------------------------
-//  Responsibilities:
-//    - Fetch classes from GET /api/classes and render cards with badges.
-//    - POLL that endpoint every few seconds so seat counts stay live without a
-//      page reload (this is the "dynamic responses" the marker asked for).
-//    - Open a re-usable modal to collect booking details, validate them
-//      client-side, and POST them to /api/bookings.
-//    - Show a confirmation (or waitlist) screen, then immediately refresh the
-//      card so the user sees the new, lower seat count.
-// ============================================================================
-
 const POLL_MS = 20000;         
 let allClasses = [];          
 let lastTrigger = null;      
