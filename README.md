@@ -90,7 +90,6 @@ their own booking reflected at once rather than waiting for the next poll.
 <img width="1710" height="969" alt="double book-1" src="https://github.com/user-attachments/assets/a2c5e782-fd1c-4dc4-9353-4392e26658b7" />
 <img width="1706" height="953" alt="double book-2" src="https://github.com/user-attachments/assets/6c77029e-491a-4910-bfff-454f83813cb7" />
 <img width="1705" height="953" alt="double book-3" src="https://github.com/user-attachments/assets/a8e38fe4-2818-4e62-95e7-ab6ce49dbebe" />
-<img width="1710" height="956" alt="double book-4" src="https://github.com/user-attachments/assets/122111ec-20e8-4f65-a6ac-24f5f777776e" />
 
 
 **The problem:** suppose a class has **1 seat left** and two people click
