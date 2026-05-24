@@ -1,42 +1,34 @@
-# MMM Art Studio — Interactive Class Booking System
+# MMM Art Studio : Interactive Class Booking System
 
 **SIT774 Web Technologies and Development · Task 10.3HD**
-**Nicolas Lai · s226148849**
+**Nicolas Lai | s226148849**
 
 A working full-stack prototype of the feature proposed in Task 7.3HD: a class
 booking system embedded in the MMM Art Studio site that shows **live seat
 availability** and lets visitors **reserve a place** without leaving the page.
 
-The two features this project focuses on (as recommended in the 7.3HD marker
-feedback) are:
+The two features this project focuses on:
 
-1. **Dynamic responses** — seat counts update live, without a page reload.
-2. **Concurrency safety** — two people cannot both book the last seat.
+1. **Dynamic responses** : seat counts update live, without a page reload.
+2. **Concurrency safety** : two people cannot both book the last seat.
 
 ---
 
 ## Tech stack
 
-| Layer      | Technology                                             |
-|------------|--------------------------------------------------------|
-| Front-end  | HTML, CSS, vanilla JavaScript (`fetch`, DOM)           |
-| Back-end   | Node.js + Express                                      |
+| Layer      | Technology                                                |
+|------------|-----------------------------------------------------------|
+| Front-end  | HTML, CSS, vanilla JavaScript (`fetch`, DOM)              |
+| Back-end   | Node.js + Express                                         |
 | Database   | SQLite via Node's built-in `node:sqlite` (`DatabaseSync`) |
-| Email      | Nodemailer (SMTP)                                      |
+| Email      | Nodemailer (SMTP)                                         |
 
-This is the same Express + `node:sqlite` stack taught in Weeks 9–10. The
+This is the same Express + `node:sqlite` stack. The
 concurrency transaction and the real email integration are the deliberate
 extensions beyond the taught scope.
 
 ---
 
-## Quick start
-
-```bash
-npm install          # install dependencies
-npm run seed         # create db/app.db and load 5 sample classes
-npm start            # start the server on http://localhost:3000
-```
 
 Then open <http://localhost:3000> in a browser.
 
