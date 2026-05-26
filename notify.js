@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 
-//  EMAIL  : Nodemailer over SMTP
 
 let mailer = null;
 
