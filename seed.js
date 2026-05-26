@@ -48,11 +48,11 @@ if (count === 0) {
   `);
 
   // name, day, time, age group, price, max spots, booked spots
-  insert.run('Watercolour for Kids',  'Sat', '10:00am – 11:30am', '12yrs & under', 35, 8, 5);  // 3 left  -> green
-  insert.run('Teen Acrylic Workshop', 'Sun', '2:00pm – 4:00pm',   'Ages 13–17',    45, 6, 5);  // 1 left  -> amber
-  insert.run('Adult Life Drawing',    'Fri', '6:00pm – 8:00pm',   '18+',           50, 10, 10); // 0 left  -> full
-  insert.run('Pottery Basics',        'Wed', '5:30pm – 7:00pm',   'All ages',      40, 12, 4);  // 8 left  -> green
-  insert.run('Calligraphy Evening',   'Thu', '6:30pm – 8:00pm',   'Ages 16+',      30, 8, 7);   // 1 left  -> amber
+  insert.run('Watercolour for Kids',  'Sat', '10:00am – 11:30am', '12yrs & under', 35, 8, 5);  
+  insert.run('Teen Acrylic Workshop', 'Sun', '2:00pm – 4:00pm',   'Ages 13–17',    45, 6, 5);  
+  insert.run('Adult Life Drawing',    'Fri', '6:00pm – 8:00pm',   '18+',           50, 10, 10); 
+  insert.run('Pottery Basics',        'Wed', '5:30pm – 7:00pm',   'All ages',      40, 12, 4);  
+  insert.run('Calligraphy Evening',   'Thu', '6:30pm – 8:00pm',   'Ages 16+',      30, 8, 7);  
 
   console.log('Seeded 5 sample classes.');
 } else {
