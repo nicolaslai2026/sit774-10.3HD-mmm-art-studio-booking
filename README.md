@@ -20,7 +20,7 @@ The two features this project focuses on:
 
 | Layer      | Technology                                                |
 |------------|-----------------------------------------------------------|
-| Front-end  | HTML, CSS, vanilla JavaScript (`fetch`, DOM)              |
+| Front-end  | HTML, CSS, vanilla JavaScript                             |
 | Back-end   | Node.js + Express                                         |
 | Database   | SQLite via Node's built-in `node:sqlite` (`DatabaseSync`) |
 | Email      | Nodemailer (SMTP)                                         |
@@ -76,8 +76,8 @@ setInterval(() => {
 ```
 
 Polling was chosen over WebSockets because it is simple, reliable, and uses the
-same `fetch` pattern taught in the unit — appropriate for a studio whose seat
-counts change every few minutes, not every millisecond. After a successful
+same `fetch` pattern taught in the unit, appropriate for a studio whose seat
+counts change every 20 seconds, not every millisecond. After a successful
 booking the front-end also calls `loadClasses()` immediately, so the user sees
 their own booking reflected at once rather than waiting for the next poll.
 
@@ -168,7 +168,7 @@ mmm-booking/
 ── notify.js            # real email (Nodemailer) integration
 ── db/
    ── seed.js          # creates tables + loads sample classes
-   ── app.db           # SQLite database (created by seed; git-ignored)
+   ── app.db           # SQLite database
 ── public/
    ── index.html       # classes page, booking modal, confirmation screen
    ── styles.css       # studio-themed, accessible styling
@@ -269,16 +269,17 @@ SESSION_SECRET=change-me-to-a-long-random-string
 
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
-EMAIL_USER=your.address@gmail.com
-EMAIL_PASS=your-16-char-app-password
-EMAIL_FROM="MMM Art Studio <your.address@gmail.com>"
+EMAIL_USER=xxxxxxxxxxxx@gmail.com
+EMAIL_PASS=16-char-app-password
+EMAIL_FROM="MMM Art Studio <xxxxxxxxxxxx@gmail.com>"
 ```
 
-The `EMAIL_PASS` is **not** your normal Gmail password — it's a 16-character "App
-Password". To create one: turn on 2-Step Verification on your Google account, then
-go to <https://myaccount.google.com/apppasswords>, generate a password, and paste
-it here with the spaces removed. The app runs fine without any of this; email just
-logs to the console until you fill it in.
+The `EMAIL_PASS` is **not** normal Gmail password. It's a 16-character "App
+Password". 
+
+How to do: turn on 2-Step Verification on your Google account, then
+go to <https://myaccount.google.com/apppasswords>, generate a password, and 
+replace "16-char-app-password". 
 
 
 ---
