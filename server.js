@@ -47,7 +47,9 @@ function toClassDTO(row) {
   };
 }
 
+
 //  FEATURE 1 : DYNAMIC AVAILABILITY
+
 app.get('/api/classes', (req, res) => {
   const rows = db.prepare('SELECT * FROM classes ORDER BY id').all();
   res.json(rows.map(toClassDTO));
@@ -59,17 +61,9 @@ app.get('/api/classes/:id', (req, res) => {
   res.json(toClassDTO(row));
 });
 
-// ===========================================================================
+
 //  FEATURE 2 : CONCURRENCY-SAFE BOOKING  
-// ---------------------------------------------------------------------------
-//  bookClassAtomically() performs the read-modify-write as ONE transaction.
-//
-//  BEGIN IMMEDIATE takes a write lock at the start, so a second request that
-//  arrives mid-transaction must wait until this one COMMITs or ROLLBACKs. By
-//  the time it runs, it sees the already-incremented booked_spots and is
-//  correctly rejected if the class is now full. Without this lock, two
-//  requests could both read "1 spot left" and both insert.
-// ===========================================================================
+
 function bookClassAtomically({ classId, name, email, phone, spots }) {
   db.exec('BEGIN IMMEDIATE');               
   try {
@@ -149,11 +143,6 @@ app.post('/api/bookings', async (req, res) => {
     return res.status(400).json({ error: 'Booking could not be completed.' });
   }
 
-  // --- Post-booking communication (real email) ---
-  // The booking is already safely committed to the database above. Sending the
-  // email is a best-effort step: if it fails (e.g. bad SMTP credentials), we
-  // log it but STILL return success, so a confirmed booking is never lost just
-  // because a message could not be delivered.
   const b = result.booking;
 
   let emailResult = { sent: false };
@@ -172,9 +161,7 @@ app.post('/api/bookings', async (req, res) => {
   });
 });
 
-// ===========================================================================
-//  WAITLIST : when a class is full, users join the queue instead.
-// ===========================================================================
+
 app.post('/api/waitlist', async (req, res) => {
   const { classId, name, email, phone } = req.body;
 
@@ -196,9 +183,7 @@ app.post('/api/waitlist', async (req, res) => {
   res.status(201).json({ message: "You're on the waitlist. We'll notify you if a spot opens." });
 });
 
-// ---------------------------------------------------------------------------
-//  Start the server
-// ---------------------------------------------------------------------------
+
 app.listen(PORT, () => {
   console.log(`MMM Art Studio booking server running at http://localhost:${PORT}`);
 });
